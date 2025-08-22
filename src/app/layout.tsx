@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import dynamic from 'next/dynamic';
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+
+const DynamicSidebarProvider = dynamic(
+  () => import('@/components/ui/sidebar').then(mod => ({ default: mod.SidebarProvider })),
+  { ssr: false }
+);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,13 +35,13 @@ export default function RootLayout({
       <body
         className="antialiased"
       >
-        <SidebarProvider>
+        <DynamicSidebarProvider>
           <AppSidebar />
           <main className="w-full ml-8">
             <SidebarTrigger className="absolute  top-1 -ml-7"/>
             {children}
           </main>
-        </SidebarProvider>
+        </DynamicSidebarProvider>
       </body>
     </html>
   );
